@@ -20,71 +20,74 @@ class Window(QWidget):
     def __init__(self): #Creates an init method. Constructor
         super(Window, self).__init__() #Super return the parent object of the class. #Calls the constructor of the QWidget
 
-        self.text = QTextEdit(self) #To enable the text editor
-
-        #Creates buttons
-        self.openButton = QPushButton('Open') #Opens a text file
-        self.clearButton = QPushButton('Clear') #Clears a text file
-        self.saveButton = QPushButton('Save') #Saves the text file
-        self.runButton = QPushButton('Run') #Runs the hypothetical test
-
-        self.dropDownTest = QComboBox() #Creates a dropdown menu
-        self.dropDownAnalyse = QComboBox() #Creates a dropdown menu
-
-        self.titleTest = QLabel('<b>TEST</b>') #Creates a label for the testing part of the interface
-        self.subtitleTest = QLabel('Test selection:')
-        self.titleAnalyse = QLabel('<b>ANALYSE</b>')
-        self.subtitleAnalyse = QLabel('Load test data:')
-
-        #Declares what will be shown when the button is hovered over
-        self.runButton.setToolTip('Press to run the test')
-        self.saveButton.setToolTip('Press to save the changes')
-        self.openButton.setToolTip('Press to open text file')
-        self.clearButton.setToolTip('Press to clear the text file')
-
         self.initUI() #Could be called externally in the if__name__ == '__main__': part
 
     def initUI(self):
+
+        self.text = QTextEdit(self) #To enable the text editor
+
+        #Open button
+        self.openButton = QPushButton('Open') #Opens a text file
+        self.openButton.setToolTip('Press to open text file') #Sets the tooltip for the button (what will happen when hovered over)
+        self.openButton.clicked.connect(self.open_text) #Connects the button to a defined function
+
+        #Clear button
+        self.clearButton = QPushButton('Clear') #Clears a text file
+        self.clearButton.setToolTip('Press to clear the text file')
+        self.clearButton.clicked.connect(self.clear_text)
+
+        #Save button
+        self.saveButton = QPushButton('Save') #Saves the text file
+        self.saveButton.setToolTip('Press to save the changes')
+        self.saveButton.clicked.connect(self.save_text)
+
+        #Run button
+        self.runButton = QPushButton('Run') #Runs the hypothetical test
+        self.runButton.setToolTip('Press to run the test')
+
+        #Dropdown test
+        self.dropDownTest = QComboBox() #Creates a dropdown menu
+        self.dropDownTest.addItem('File 1') #Adds items to the dropdown menu
+        self.dropDownTest.addItem('File 2')
+        self.dropDownTest.addItem('File 3')
+
+        #Dropdown analyse
+        self.dropDownAnalyse = QComboBox() #Creates a dropdown menu
+        self.dropDownAnalyse.addItem('Data 1')
+        self.dropDownAnalyse.addItem('Data 2')
+        self.dropDownAnalyse.addItem('Data 3')
+
+        #Titles and subtitles
+        self.titleTest = QLabel('<b>TEST</b>') #Creates a label for the testing part of the interface
+        self.titleTest.setFont(QFont('SansSerif', 14)) #Sets the size of the test label
+        self.subtitleTest = QLabel('Test selection:')
+        self.titleAnalyse = QLabel('<b>ANALYSE</b>')
+        self.titleAnalyse.setFont(QFont('SansSerif', 14))
+        self.subtitleAnalyse = QLabel('Load test data:')
+
+        #Layout
         v1Layout = QVBoxLayout() #Creates a vertical box layout
         h1Layout = QHBoxLayout() #Creates a horisontal box layout
         h2Layout = QHBoxLayout()
         h3Layout = QHBoxLayout()
 
-        #Places a dropdown menu (not get fully functioning)
-        v1Layout.addWidget(self.titleTest)
-        self.titleTest.setFont(QFont('SansSerif', 14)) #Sets the size of the test label
-        h1Layout.addWidget(self.subtitleTest)
-
+        v1Layout.addWidget(self.titleTest) #Adds the widget for the test title to the vertical box layout
+        h1Layout.addWidget(self.subtitleTest) #Adds the widget for the test subtitle to the first horisontal layout
         h1Layout.addWidget(self.dropDownTest)
-        self.dropDownTest.addItem('File 1')
-        self.dropDownTest.addItem('File 2')
-        self.dropDownTest.addItem('File 3')
 
-        v1Layout.addLayout(h1Layout)
-
-        v1Layout.addWidget(self.openButton) #Places the open button
-
+        v1Layout.addLayout(h1Layout) #Adds the first horisontal layout to the vertical layout
+        v1Layout.addWidget(self.openButton)
         v1Layout.addWidget(self.text) #Places the text editor
 
-        #Places buttons in the window
         h2Layout.addWidget(self.clearButton)
         h2Layout.addWidget(self.saveButton)
         h2Layout.addWidget(self.runButton)
 
-        #Assignes what will happen when the buttons are clicked on
-        self.openButton.clicked.connect(self.open_text)
-        self.clearButton.clicked.connect(self.clear_text)
-        self.saveButton.clicked.connect(self.save_text)
-
-        v1Layout.addLayout(h2Layout) #Adds the horisontal layout within the vertical layout
-
+        v1Layout.addLayout(h2Layout)
         v1Layout.addWidget(self.titleAnalyse)
 
         h3Layout.addWidget(self.subtitleAnalyse)
         h3Layout.addWidget(self.dropDownAnalyse)
-        self.dropDownAnalyse.addItem('Data 1')
-        self.dropDownAnalyse.addItem('Data 2')
-        self.dropDownAnalyse.addItem('Data 3')
 
         v1Layout.addLayout(h3Layout)
 
