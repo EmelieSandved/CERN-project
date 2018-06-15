@@ -44,6 +44,7 @@ class Window(QWidget):
         #Run button
         self.runButton = QPushButton('Run') #Runs the hypothetical test
         self.runButton.setToolTip('Press to run the test')
+        self.runButton.clicked.connect(self.run_test)
 
         #Dropdown test
         self.dropDownTest = QComboBox() #Creates a dropdown menu
@@ -111,6 +112,9 @@ class Window(QWidget):
         with open(filename[0], 'r') as f: #What does this part mean?
             file_text = f.read()
             self.text.setText(file_text)
+
+    def run_test(self):
+        pass
 
 def main(): #The main function
 
