@@ -3,7 +3,7 @@
 
 
 #Things to be done:
-#Fix so that the program ends correctly when pressing the "Cancel" button in open and save file
+#Fix so that the program ends correctly when pressing the "Cancel" or red close button in open and save file
 #Implement a warning when closing the window (without saving)
 
 
@@ -12,7 +12,7 @@
 
 import sys #Necessary?
 import os #Enables the use of the file dialoge
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout
 from PyQt5.QtGui import QFont
 
 class Window(QWidget):
@@ -28,10 +28,13 @@ class Window(QWidget):
         self.saveButton = QPushButton('Save') #Saves the text file
         self.runButton = QPushButton('Run') #Runs the hypothetical test
 
-        self.dropDown = QComboBox() #Creates a dropdown menu
+        self.dropDownTest = QComboBox() #Creates a dropdown menu
+        self.dropDownAnalyse = QComboBox() #Creates a dropdown menu
 
         self.titleTest = QLabel('<b>TEST</b>') #Creates a label for the testing part of the interface
-        self.titleTestSelection = QLabel('Test selection')
+        self.subtitleTest = QLabel('Test selection:')
+        self.titleAnalyse = QLabel('<b>ANALYSE</b>')
+        self.subtitleAnalyse = QLabel('Load test data:')
 
         #Declares what will be shown when the button is hovered over
         self.runButton.setToolTip('Press to run the test')
@@ -42,38 +45,52 @@ class Window(QWidget):
         self.initUI() #Could be called externally in the if__name__ == '__main__': part
 
     def initUI(self):
-        vLayout = QVBoxLayout() #Creates a vertical box layout
-        hLayout = QHBoxLayout() #Creates a horisontal box layout
+        v1Layout = QVBoxLayout() #Creates a vertical box layout
+        h1Layout = QHBoxLayout() #Creates a horisontal box layout
+        h2Layout = QHBoxLayout()
+        h3Layout = QHBoxLayout()
 
         #Places a dropdown menu (not get fully functioning)
-        vLayout.addWidget(self.titleTest)
+        v1Layout.addWidget(self.titleTest)
         self.titleTest.setFont(QFont('SansSerif', 14)) #Sets the size of the test label
-        vLayout.addWidget(self.titleTestSelection)
+        h1Layout.addWidget(self.subtitleTest)
 
-        vLayout.addWidget(self.dropDown)
-        self.dropDown.addItem('File 1')
-        self.dropDown.addItem('File 2')
-        self.dropDown.addItem('File 3')
+        h1Layout.addWidget(self.dropDownTest)
+        self.dropDownTest.addItem('File 1')
+        self.dropDownTest.addItem('File 2')
+        self.dropDownTest.addItem('File 3')
 
-        vLayout.addWidget(self.openButton) #Places the open button
+        v1Layout.addLayout(h1Layout)
 
-        vLayout.addWidget(self.text) #Places the text editor
+        v1Layout.addWidget(self.openButton) #Places the open button
+
+        v1Layout.addWidget(self.text) #Places the text editor
 
         #Places buttons in the window
-        hLayout.addWidget(self.clearButton)
-        hLayout.addWidget(self.saveButton)
-        hLayout.addWidget(self.runButton)
+        h2Layout.addWidget(self.clearButton)
+        h2Layout.addWidget(self.saveButton)
+        h2Layout.addWidget(self.runButton)
 
         #Assignes what will happen when the buttons are clicked on
         self.openButton.clicked.connect(self.open_text)
         self.clearButton.clicked.connect(self.clear_text)
         self.saveButton.clicked.connect(self.save_text)
 
-        vLayout.addLayout(hLayout) #Adds the horisontal layout within the vertical layout
+        v1Layout.addLayout(h2Layout) #Adds the horisontal layout within the vertical layout
+
+        v1Layout.addWidget(self.titleAnalyse)
+
+        h3Layout.addWidget(self.subtitleAnalyse)
+        h3Layout.addWidget(self.dropDownAnalyse)
+        self.dropDownAnalyse.addItem('Data 1')
+        self.dropDownAnalyse.addItem('Data 2')
+        self.dropDownAnalyse.addItem('Data 3')
+
+        v1Layout.addLayout(h3Layout)
 
         QToolTip.setFont(QFont('SansSerif', 10)) #Sets the font for the Tooltip elements (the text explaining the function of a widget by popping up when hovered over)
 
-        self.setLayout(vLayout)
+        self.setLayout(v1Layout)
         self.setWindowTitle('MIDAS') #Sets the window title
         self.show() #Shows the window
 
