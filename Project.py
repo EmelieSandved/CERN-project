@@ -1,4 +1,4 @@
-#Amanda Christianson
+#Amanda Christianson och Emelie Sandved
 #2018-06
 
 
