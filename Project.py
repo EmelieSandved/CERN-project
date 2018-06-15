@@ -12,8 +12,9 @@
 
 import sys #Necessary?
 import os #Enables the use of the file dialoge
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtGui import QFont
+
 
 class Window(QWidget):
 
