@@ -12,8 +12,15 @@
 
 import sys #Necessary?
 import os #Enables the use of the file dialoge
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QDialog
 from PyQt5.QtGui import QFont
+
+#For the graph
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+
+import random #To creat data to plot (should be removed)
 
 
 class Window(QWidget):
@@ -67,6 +74,15 @@ class Window(QWidget):
         self.titleAnalyse.setFont(QFont('SansSerif', 14))
         self.subtitleAnalyse = QLabel('Load test data:')
 
+        #Diagram
+        self.figure = plt.figure() #A figure to plot on
+        self.canvas = FigureCanvas(self.figure) #Displays the figure
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # Plot button
+        self.plotButton = QPushButton('Plot')
+        self.plotButton.clicked.connect(self.plot)
+
         #Layout
         v1Layout = QVBoxLayout() #Creates a vertical box layout
         h1Layout = QHBoxLayout() #Creates a horisontal box layout
@@ -93,6 +109,11 @@ class Window(QWidget):
 
         v1Layout.addLayout(h3Layout)
 
+        #Layout for the graph
+        v1Layout.addWidget(self.toolbar)
+        v1Layout.addWidget(self.canvas)
+        v1Layout.addWidget(self.plotButton)
+
         QToolTip.setFont(QFont('SansSerif', 10)) #Sets the font for the Tooltip elements (the text explaining the function of a widget by popping up when hovered over)
 
         self.setLayout(v1Layout)
@@ -116,6 +137,27 @@ class Window(QWidget):
 
     def run_test(self):
         pass
+
+    #Graph
+    def plot(self):
+        ''' plot some random stuff '''
+        # random data
+        data = [random.random() for i in range(10)]
+
+        # instead of ax.hold(False)
+        self.figure.clear()
+
+        # create an axis
+        ax = self.figure.add_subplot(111)
+
+        # discards the old graph
+        # ax.hold(False) # deprecated, see above
+
+        # plot data
+        ax.plot(data, '*-')
+
+        # refresh canvas
+        self.canvas.draw()
 
 def main(): #The main function
 
