@@ -20,7 +20,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
 
-import random #To creat data to plot (should be removed)
+import random #To create data to plot (should be removed later on)
+from datetime import datetime #Datetime is used to seed random (should be removed later on)
 
 
 class Window(QWidget):
@@ -138,28 +139,45 @@ class Window(QWidget):
     def run_test(self):
         pass
 
-    #Graph
-    def plot(self):
-        ''' plot some random stuff '''
-        # random data
-        data = [random.random() for i in range(10)]
+    def plot(self): #Plots the data as a graph
+        self.figure.clear() #Clears the figure. May be good to use if we decide to keep the plot button
 
-        # instead of ax.hold(False)
-        self.figure.clear()
+        xList = [] #Creates lists for the x and y koordinates
+        yList = []
 
-        # create an axis
-        ax = self.figure.add_subplot(111)
+        text_file = open("data2.txt", "r")
+        lines = text_file.readlines()
+        for line in lines:
+            x,y = line.split(',')
+            x = float(x)
+            y = float(y)
+            xList.append(x)
+            yList.append(y)
+            #print(xList) #To check the code for errors
+        text_file.close()
 
-        # discards the old graph
-        # ax.hold(False) # deprecated, see above
+        plt.xlabel('Time (s)') #Labels the axes
+        plt.ylabel('Voltage(V)')
+        plt.plot(xList,yList) #Plots the data using the lists of x and y koordinates
+        #axis = self.figure.add_subplot(111) #Creates an axis. The number stands for how the graph will be placed within the canvas.
 
-        # plot data
-        ax.plot(data, '*-')
+        #axis.plot(data, '*-') #Plots the data in the way that is indicated by '*-'
 
-        # refresh canvas
-        self.canvas.draw()
+        self.canvas.draw() #Draws the graph
 
 def main(): #The main function
+
+    random.seed(datetime.now()) #Seeds random from the current time
+
+    """
+    text_file = open("data2.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
+    for index in range(10):
+        x = str(index)
+        y = str(round(random.uniform(0,9), 3)) #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
+        text_file.write(x + ',' + y)
+        text_file.write('\n')
+    text_file.close()
+    """
 
     app = QApplication(sys.argv) #Creates an application object. sys.argv is a list of command line arguments.
     ex = Window()
