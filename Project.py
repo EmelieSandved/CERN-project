@@ -5,6 +5,7 @@
 #Things to be done:
 #Fix so that the program ends correctly when pressing the "Cancel" or red close button in open and save file
 #Implement a warning when closing the window (without saving)
+#The graph widget (figure) should not be opened/shown until a file is chosen in the drop down menu
 
 
 #!/usr/in/python3 #Defines where the interpretor is located. Tells the operating system that it is a python script?
