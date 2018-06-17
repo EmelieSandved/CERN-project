@@ -62,10 +62,15 @@ class Window(QWidget):
         self.dropDownTest.addItem('File 3')
 
         #Dropdown analyse
+        directoryFiles = []
         self.dropDownAnalyse = QComboBox() #Creates a dropdown menu
-        self.dropDownAnalyse.addItem('Data 1')
-        self.dropDownAnalyse.addItem('Data 2')
-        self.dropDownAnalyse.addItem('Data 3')
+        for index in os.listdir(): #Adds the files in the directory to a list
+            directoryFiles.append(index)
+        directoryFiles.sort() #Sorts the list with the files in the directory
+        for index in directoryFiles: #Adds the text files in the directory to the drop down menu in alphabetic order
+            if index.find('txt') != -1: #Ensures that only text files are displayed as options (change so that it corresponds to the actual file type that we will use later on (if it is not .txt)
+                self.dropDownAnalyse.addItem(index)
+        self.dropDownAnalyse.activated[str].connect(self.plot) #Connects the user's choice in the dropdown menu to the plot function
 
         #Titles and subtitles
         self.titleTest = QLabel('<b>TEST</b>') #Creates a label for the testing part of the interface
@@ -139,15 +144,15 @@ class Window(QWidget):
     def run_test(self):
         pass
 
-    def plot(self): #Plots the data as a graph
+    def plot(self, fileName): #Plots the data as a graph
         self.figure.clear() #Clears the figure. May be good to use if we decide to keep the plot button
 
-        xList = [] #Creates lists for the x and y koordinates
+        xList = [] #Creates lists for the x and y coordinates
         yList = []
 
-        text_file = open("data2.txt", "r")
+        text_file = open(fileName, "r") #Opens and reads the file with the name passed as an argument to the function (the file chosen in the dropdown menu)
         lines = text_file.readlines()
-        for line in lines:
+        for line in lines: #Adds the x and y coordinates to the corresponding lists
             x,y = line.split(',')
             x = float(x)
             y = float(y)
@@ -158,7 +163,7 @@ class Window(QWidget):
 
         plt.xlabel('Time (s)') #Labels the axes
         plt.ylabel('Voltage(V)')
-        plt.plot(xList,yList) #Plots the data using the lists of x and y koordinates
+        plt.plot(xList,yList) #Plots the data using the lists of x and y coordinates
         #axis = self.figure.add_subplot(111) #Creates an axis. The number stands for how the graph will be placed within the canvas.
 
         #axis.plot(data, '*-') #Plots the data in the way that is indicated by '*-'
@@ -170,7 +175,7 @@ def main(): #The main function
     random.seed(datetime.now()) #Seeds random from the current time
 
     """
-    text_file = open("data2.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
+    text_file = open("test.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
     for index in range(10):
         x = str(index)
         y = str(round(random.uniform(0,9), 3)) #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
