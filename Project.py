@@ -85,10 +85,6 @@ class Window(QWidget):
         self.canvas = FigureCanvas(self.figure) #Displays the figure
         self.toolbar = NavigationToolbar(self.canvas, self)
 
-        # Plot button
-        self.plotButton = QPushButton('Plot')
-        self.plotButton.clicked.connect(self.plot)
-
         #Layout
         v1Layout = QVBoxLayout() #Creates a vertical box layout
         h1Layout = QHBoxLayout() #Creates a horisontal box layout
@@ -118,7 +114,6 @@ class Window(QWidget):
         #Layout for the graph
         v1Layout.addWidget(self.toolbar)
         v1Layout.addWidget(self.canvas)
-        v1Layout.addWidget(self.plotButton)
 
         QToolTip.setFont(QFont('SansSerif', 10)) #Sets the font for the Tooltip elements (the text explaining the function of a widget by popping up when hovered over)
 
@@ -172,9 +167,9 @@ class Window(QWidget):
 
 def main(): #The main function
 
+    """
     random.seed(datetime.now()) #Seeds random from the current time
 
-    """
     text_file = open("test.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
     for index in range(10):
         x = str(index)
