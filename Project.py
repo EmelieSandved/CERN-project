@@ -13,8 +13,10 @@
 
 import sys #Necessary?
 import os #Enables the use of the file dialoge
+import math #Enables the use of sinus and cosinus for the creation of data
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QDialog
 from PyQt5.QtGui import QFont
+import numpy as np #To use floats as x values
 
 #For the graph
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -141,6 +143,8 @@ class Window(QWidget):
         plt.xlabel('Time (s)') #Labels the axes
         plt.ylabel('Voltage(V)')
         plt.plot(xList,yList) #Plots the data using the lists of x and y coordinates
+
+        plt.axhline(0, color ='black') #Plots line at y = 0
         #axis = self.figure.add_subplot(111) #Creates an axis. The number stands for how the graph will be placed within the canvas.
 
         #axis.plot(data, '*-') #Plots the data in the way that is indicated by '*-'
@@ -149,17 +153,18 @@ class Window(QWidget):
 
 def main(): #The main function
 
-    """
+
     random.seed(datetime.now()) #Seeds random from the current time
 
-    text_file = open("test.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
-    for index in range(10):
+    text_file = open("sine2.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
+    for index in np.arange(0.0, math.pi, 0.1): #(start, stop, step)
         x = str(index)
-        y = str(round(random.uniform(0,9), 3)) #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
+        y = str(math.sin(2*float(x)))
+        #y = str(round(random.uniform(0,9), 3)) #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
         text_file.write(x + ',' + y)
         text_file.write('\n')
     text_file.close()
-    """
+
 
     app = QApplication(sys.argv) #Creates an application object. sys.argv is a list of command line arguments.
     ex = Window()
