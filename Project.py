@@ -107,11 +107,8 @@ class Window(QWidget):
 
         h3Layout.addWidget(self.subtitleAnalyse)
         h3Layout.addWidget(self.dropDownAnalyse)
-<<<<<<< HEAD
         h3Layout.addWidget(self.fftButton)
-=======
-        h3Layout.addStretch(1)
->>>>>>> 488f1ffb9a88f9c74db54c4795e92157fdb10f04
+        h3Layout.addStretch(1) #Pushes the widgets to the left corner
 
         v1Layout.addLayout(h3Layout)
 
