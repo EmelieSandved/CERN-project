@@ -14,9 +14,11 @@
 import sys #Necessary?
 import os #Enables the use of the file dialoge
 import math #Enables the use of sinus and cosinus for the creation of data
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox
 from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
 import numpy as np #To use floats as x values
+from numpy.fft import fft, fftshift
 
 #For the graph
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -64,6 +66,11 @@ class Window(QWidget):
         self.dropDownTest.addItem('File 2')
         self.dropDownTest.addItem('File 3')
 
+        #FFT button
+        self.fftButton = QCheckBox('FFT')
+        self.fftButton.stateChanged.connect(self.fft_function)
+        self.fftButton.setToolTip('Fast Fourier Transform')
+
         #Dropdown analyse
         directoryFiles = []
         self.dropDownAnalyse = QComboBox() #Creates a dropdown menu
@@ -71,9 +78,9 @@ class Window(QWidget):
             directoryFiles.append(index)
         directoryFiles.sort() #Sorts the list with the files in the directory
         for index in directoryFiles: #Adds the text files in the directory to the drop down menu in alphabetic order
-            if index.find('txt') != -1: #Ensures that only text files are displayed as options (change so that it corresponds to the actual file type that we will use later on (if it is not .txt)
+            if index.find('.txt') != -1: #Ensures that only text files are displayed as options (change so that it corresponds to the actual file type that we will use later on (if it is not .txt)
                 self.dropDownAnalyse.addItem(index)
-        self.dropDownAnalyse.activated[str].connect(self.plot) #Connects the user's choice in the dropdown menu to the plot function
+        self.dropDownAnalyse.activated[str].connect(self.plot)
 
         #Titles and subtitles
         self.titleTest = QLabel('<b>TEST</b>') #Creates a label for the testing part of the interface
@@ -111,6 +118,7 @@ class Window(QWidget):
 
         h3Layout.addWidget(self.subtitleAnalyse)
         h3Layout.addWidget(self.dropDownAnalyse)
+        h3Layout.addWidget(self.fftButton)
 
         v1Layout.addLayout(h3Layout)
 
@@ -143,6 +151,7 @@ class Window(QWidget):
         pass
 
     def plot(self, fileName): #Plots the data as a graph
+
         self.figure.clear() #Clears the figure. May be good to use if we decide to keep the plot button
 
         xList = [] #Creates lists for the x and y coordinates
@@ -156,25 +165,24 @@ class Window(QWidget):
             y = float(y)
             xList.append(x)
             yList.append(y)
-            #print(xList) #To check the code for errors
         text_file.close()
 
-        plt.xlabel('Time (s)') #Labels the axes
+        plt.xlabel('Time (s)')
         plt.ylabel('Voltage(V)')
-        plt.plot(xList,yList) #Plots the data using the lists of x and y coordinates
-
-        plt.axhline(0, color ='black') #Plots line at y = 0
-        #axis = self.figure.add_subplot(111) #Creates an axis. The number stands for how the graph will be placed within the canvas.
-
-        #axis.plot(data, '*-') #Plots the data in the way that is indicated by '*-'
+        plt.plot(xList, yList)
+        plt.axhline(0, color ='black', linewidth = 0.5) #Plots line at y = 0
 
         self.canvas.draw() #Draws the graph
+
+    def fft_function(self, state):
+        pass
 
 def main(): #The main function
 
 
     random.seed(datetime.now()) #Seeds random from the current time
 
+    """
     text_file = open("sine2.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
     for index in np.arange(0.0, math.pi, 0.1): #(start, stop, step)
         x = str(index)
@@ -183,7 +191,7 @@ def main(): #The main function
         text_file.write(x + ',' + y)
         text_file.write('\n')
     text_file.close()
-
+    """
 
     app = QApplication(sys.argv) #Creates an application object. sys.argv is a list of command line arguments.
     ex = Window()
