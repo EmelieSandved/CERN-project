@@ -5,6 +5,7 @@
 #Things to be done:
 #Fix so that the program ends correctly when pressing the "Cancel" or red close button in open and save file
 #Implement a warning when closing the window (without saving)
+#The graph widget (figure) should not be opened/shown until a file is chosen in the drop down menu
 
 
 #!/usr/in/python3 #Defines where the interpretor is located. Tells the operating system that it is a python script?
@@ -12,8 +13,17 @@
 
 import sys #Necessary?
 import os #Enables the use of the file dialoge
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QDialog
 from PyQt5.QtGui import QFont
+
+#For the graph
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+
+import random #To create data to plot (should be removed later on)
+from datetime import datetime #Datetime is used to seed random (should be removed later on)
+
 
 class Window(QWidget):
 
@@ -53,10 +63,15 @@ class Window(QWidget):
         self.dropDownTest.addItem('File 3')
 
         #Dropdown analyse
+        directoryFiles = []
         self.dropDownAnalyse = QComboBox() #Creates a dropdown menu
-        self.dropDownAnalyse.addItem('Data 1')
-        self.dropDownAnalyse.addItem('Data 2')
-        self.dropDownAnalyse.addItem('Data 3')
+        for index in os.listdir(): #Adds the files in the directory to a list
+            directoryFiles.append(index)
+        directoryFiles.sort() #Sorts the list with the files in the directory
+        for index in directoryFiles: #Adds the text files in the directory to the drop down menu in alphabetic order
+            if index.find('txt') != -1: #Ensures that only text files are displayed as options (change so that it corresponds to the actual file type that we will use later on (if it is not .txt)
+                self.dropDownAnalyse.addItem(index)
+        self.dropDownAnalyse.activated[str].connect(self.plot) #Connects the user's choice in the dropdown menu to the plot function
 
         #Titles and subtitles
         self.titleTest = QLabel('<b>TEST</b>') #Creates a label for the testing part of the interface
@@ -65,6 +80,11 @@ class Window(QWidget):
         self.titleAnalyse = QLabel('<b>ANALYSE</b>')
         self.titleAnalyse.setFont(QFont('SansSerif', 14))
         self.subtitleAnalyse = QLabel('Load test data:')
+
+        #Diagram
+        self.figure = plt.figure() #A figure to plot on
+        self.canvas = FigureCanvas(self.figure) #Displays the figure
+        self.toolbar = NavigationToolbar(self.canvas, self)
 
         #Layout
         v1Layout = QVBoxLayout() #Creates a vertical box layout
@@ -92,6 +112,10 @@ class Window(QWidget):
 
         v1Layout.addLayout(h3Layout)
 
+        #Layout for the graph
+        v1Layout.addWidget(self.toolbar)
+        v1Layout.addWidget(self.canvas)
+
         QToolTip.setFont(QFont('SansSerif', 10)) #Sets the font for the Tooltip elements (the text explaining the function of a widget by popping up when hovered over)
 
         self.setLayout(v1Layout)
@@ -116,7 +140,45 @@ class Window(QWidget):
     def run_test(self):
         pass
 
+    def plot(self, fileName): #Plots the data as a graph
+        self.figure.clear() #Clears the figure. May be good to use if we decide to keep the plot button
+
+        xList = [] #Creates lists for the x and y coordinates
+        yList = []
+
+        text_file = open(fileName, "r") #Opens and reads the file with the name passed as an argument to the function (the file chosen in the dropdown menu)
+        lines = text_file.readlines()
+        for line in lines: #Adds the x and y coordinates to the corresponding lists
+            x,y = line.split(',')
+            x = float(x)
+            y = float(y)
+            xList.append(x)
+            yList.append(y)
+            #print(xList) #To check the code for errors
+        text_file.close()
+
+        plt.xlabel('Time (s)') #Labels the axes
+        plt.ylabel('Voltage(V)')
+        plt.plot(xList,yList) #Plots the data using the lists of x and y coordinates
+        #axis = self.figure.add_subplot(111) #Creates an axis. The number stands for how the graph will be placed within the canvas.
+
+        #axis.plot(data, '*-') #Plots the data in the way that is indicated by '*-'
+
+        self.canvas.draw() #Draws the graph
+
 def main(): #The main function
+
+    """
+    random.seed(datetime.now()) #Seeds random from the current time
+
+    text_file = open("test.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
+    for index in range(10):
+        x = str(index)
+        y = str(round(random.uniform(0,9), 3)) #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
+        text_file.write(x + ',' + y)
+        text_file.write('\n')
+    text_file.close()
+    """
 
     app = QApplication(sys.argv) #Creates an application object. sys.argv is a list of command line arguments.
     ex = Window()
