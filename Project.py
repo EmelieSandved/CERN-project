@@ -36,16 +36,6 @@ class Window(QWidget):
 
         self.text = QTextEdit(self) #To enable the text editor
 
-        #Open button
-        self.openButton = QPushButton('Open') #Opens a text file
-        self.openButton.setToolTip('Press to open text file') #Sets the tooltip for the button (what will happen when hovered over)
-        self.openButton.clicked.connect(self.open_text) #Connects the button to a defined function
-
-        #Clear button
-        self.clearButton = QPushButton('Clear') #Clears a text file
-        self.clearButton.setToolTip('Press to clear the text file')
-        self.clearButton.clicked.connect(self.clear_text)
-
         #Save button
         self.saveButton = QPushButton('Save') #Saves the text file
         self.saveButton.setToolTip('Press to save the changes')
@@ -95,12 +85,11 @@ class Window(QWidget):
         v1Layout.addWidget(self.titleTest) #Adds the widget for the test title to the vertical box layout
         h1Layout.addWidget(self.subtitleTest) #Adds the widget for the test subtitle to the first horisontal layout
         h1Layout.addWidget(self.dropDownTest)
+        h1Layout.addStretch(1)
 
         v1Layout.addLayout(h1Layout) #Adds the first horisontal layout to the vertical layout
-        v1Layout.addWidget(self.openButton)
         v1Layout.addWidget(self.text) #Places the text editor
 
-        h2Layout.addWidget(self.clearButton)
         h2Layout.addWidget(self.saveButton)
         h2Layout.addWidget(self.runButton)
 
@@ -109,6 +98,7 @@ class Window(QWidget):
 
         h3Layout.addWidget(self.subtitleAnalyse)
         h3Layout.addWidget(self.dropDownAnalyse)
+        h3Layout.addStretch(1)
 
         v1Layout.addLayout(h3Layout)
 
@@ -122,20 +112,11 @@ class Window(QWidget):
         self.setWindowTitle('MIDAS') #Sets the window title
         self.show() #Shows the window
 
-    def clear_text(self): #Clears a text document
-        self.text.clear()
-
     def save_text(self): #Lets the user save a document in a chosen folder
         filename = QFileDialog.getSaveFileName(self, 'Save file', os.getenv('HOME')) #The os.getenv accesses the file dialog (finder)
         with open(filename[0], 'w') as f: #What does this part mean?
             my_text = self.text.toPlainText()
             f.write(my_text)
-
-    def open_text(self): #Lets the user choose a file by opening the file dialoge (finder)
-        filename = QFileDialog.getOpenFileName(self, 'Open file', os.getenv('HOME')) #The os.getenv accesses the file dialog (finder)
-        with open(filename[0], 'r') as f: #What does this part mean?
-            file_text = f.read()
-            self.text.setText(file_text)
 
     def run_test(self):
         pass
