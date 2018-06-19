@@ -52,13 +52,11 @@ class Window(QWidget):
 
         #Dropdown test
         self.dropDownTest = QComboBox() #Creates a dropdown menu
-        self.dropDownTest.addItem('File 1') #Adds items to the dropdown menu
-        self.dropDownTest.addItem('File 2')
-        self.dropDownTest.addItem('File 3')
 
         #FFT button
         self.fftButton = QCheckBox('FFT')
-        self.fftButton.stateChanged.connect(self.fft_function)
+        #self.fftButton.stateChanged.connect(self.fft_function)
+        #self.fftButton.toggled.connect(self.fft_function)
         self.fftButton.setToolTip('Fast Fourier Transform')
 
         #Dropdown analyse
@@ -148,18 +146,58 @@ class Window(QWidget):
             yList.append(y)
         text_file.close()
 
-        plt.xlabel('Time (s)')
+        #plt.xlabel('Time (s)')
         plt.ylabel('Voltage(V)')
-        plt.plot(xList, yList)
+        #plt.plot(xList, yList)
+
+        plt.axhline(0, color ='black', linewidth = 0.5) #Plots line at y = 0
+
+        #print(self.fftButton.isChecked()) #To check the program for errors
+
+        #Checks if the FFT checkbox is checked and adjusts the x axis and plot of the data
+        #self.fftButton.toggled.connect(self.fft_function)
+
+        if self.fftButton.isChecked():
+            plt.xlabel('Frequency (Hz)')
+            plt.plot(xList, fft(yList))
+        else:
+            plt.xlabel('Time (s)')
+            plt.plot(xList, yList)
+
+        self.canvas.draw()
+
+    """
+    def plot_fft(self, fileName): #Plots the data as a graph
+
+        self.figure.clear() #Clears the figure. May be good to use if we decide to keep the plot button
+
+        xList = [] #Creates lists for the x and y coordinates
+        yList = []
+
+        text_file = open(fileName, "r") #Opens and reads the file with the name passed as an argument to the function (the file chosen in the dropdown menu)
+        lines = text_file.readlines()
+        for line in lines: #Adds the x and y coordinates to the corresponding lists
+            x,y = line.split(',')
+            x = float(x)
+            y = float(y)
+            xList.append(x)
+            yList.append(y)
+        text_file.close()
+
+        plt.xlabel('Frequenzy (Hz)')
+        plt.ylabel('Voltage(V)')
+        plt.plot(xList, fft(yList))
+
         plt.axhline(0, color ='black', linewidth = 0.5) #Plots line at y = 0
 
         self.canvas.draw() #Draws the graph
+        
+    """
 
-    def fft_function(self, state):
+    def fft_function(self):
         pass
 
 def main(): #The main function
-
 
     random.seed(datetime.now()) #Seeds random from the current time
 
