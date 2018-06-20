@@ -16,7 +16,7 @@
 #Imports the necessary libraries
 import sys
 import os
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QDockWidget
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 import numpy as np
@@ -66,18 +66,9 @@ class Window(QWidget):
         #Dropdown analyse
         directoryFiles = []
         self.dropDownAnalyse = QComboBox()
-
         #Adds the files in the directory to a list
         for index in os.listdir():
             directoryFiles.append(index)
-
-        #For the graph. The figure is where the data is plotted and the canvas is where the figure is displayed.
-        self.figure = plt.figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
-
-        self.toolbar.hide()
-
         #Adds the text files in the directory to the drop down menu in alphabetical  order
         directoryFiles.sort()
         for index in directoryFiles:
@@ -85,6 +76,13 @@ class Window(QWidget):
             if index.find('.txt') != -1:
                 self.dropDownAnalyse.addItem(index)
         self.dropDownAnalyse.activated[str].connect(self.plot)
+
+        #For the graph. The figure is where the data is plotted and the canvas is where the figure is displayed.
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        self.toolbar.hide()
 
         #Titles and subtitles
         self.titleTest = QLabel('<b>TEST</b>')
@@ -108,6 +106,7 @@ class Window(QWidget):
         #Adds widgets to the first horisontal layout
         h1Layout.addWidget(self.subtitleTest)
         h1Layout.addWidget(self.dropDownTest)
+
         #Pushes the widgets to the left corner
         h1Layout.addStretch(1)
 
@@ -153,7 +152,9 @@ class Window(QWidget):
 
     #Plots the data (of the file passed as an argument) as a graph
     def plot(self, fileName):
+
         self.figure.clear()
+        #self.canvas.show()
 
         #Creates lists for the x and y coordinates
         xList = []
