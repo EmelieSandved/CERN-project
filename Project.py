@@ -7,8 +7,7 @@
 #Implement a warning when closing the window (without saving)
 #The graph widget (figure) should not be opened/shown until a file is chosen in the drop down menu
 #Reload the drop down menus, call it each time the menu is closed
-#Put the comments before (not on the sides)
-#Pass function in function = good, then you don't have to rewrite the entire code, onöy the part that changes
+#Add felkontrollering: exeption: "try:...exept:..." Inform user..."finally: f.close()"
 
 #!/usr/in/python3 #Defines where the interpretor is located. Tells the operating system that it is a python script?
 # -*- coding: utf-8 -*-
@@ -64,13 +63,10 @@ class Window(QWidget):
         self.fftButton.setToolTip('Fast Fourier Transform')
 
         #Dropdown analyse
-        directoryFiles = []
         self.dropDownAnalyse = QComboBox()
         #Adds the files in the directory to a list
-        for index in os.listdir():
-            directoryFiles.append(index)
-        #Adds the text files in the directory to the drop down menu in alphabetical  order
-        directoryFiles.sort()
+        directoryFiles = sorted(os.listdir())
+        #Adds the text files in the directory to the drop down menu in alphabetical order
         for index in directoryFiles:
             #Ensures that only text files are displayed as options
             if index.find('.txt') != -1:
