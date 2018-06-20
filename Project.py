@@ -42,22 +42,30 @@ class Window(QWidget):
 
     def initUI(self):
 
-        #To enable the text editor
-        self.text = QTextEdit(self)
+        #Dropdown test
+        directorytestFiles = []
+        self.dropDownTest = QComboBox()
+        for index in os.listdir(): #Adds the files in the directory to a list
+            directorytestFiles.append(index)
+        for index in directorytestFiles:
+            if index.find('.py') == -1:
+                self.dropDownTest.addItem(index)
+        self.dropDownTest.activated[str].connect(self.open_file) #Connects the user's choice in the dropdown menu
+        self.dropDownTest.setToolTip('List over Testfiles')
 
-        #Save button
+        #Textbox
+        self.text = QTextEdit(self)
+        self.text.hide()
+
+        #SaveButton
         self.saveButton = QPushButton('Save')
         self.saveButton.setToolTip('Press to save the changes')
         self.saveButton.clicked.connect(self.save_text)
 
-        #Run button
+        #RunButton
         self.runButton = QPushButton('Run')
-        self.runButton.setToolTip('Press to run the test')
+        self.runButton.setToolTip('Press to run the testfile')
         self.runButton.clicked.connect(self.run_test)
-
-        #Dropdown test
-        self.dropDownTest = QComboBox()
-
         #FFT button
         self.fftButton = QCheckBox('FFT')
         self.fftButton.setToolTip('Fast Fourier Transform')
@@ -134,6 +142,12 @@ class Window(QWidget):
         self.setWindowTitle('MIDAS')
         #Shows the window
         self.show()
+
+    #Function for dropdownbox
+    def open_file(self, fileName):
+        textFile = open(fileName).read()
+        self.text.setText(textFile)
+        self.text.show()
 
     #Lets the user save a document in a chosen folder
     def save_text(self):
