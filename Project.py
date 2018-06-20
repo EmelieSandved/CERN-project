@@ -6,18 +6,20 @@
 #Fix so that the program ends correctly when pressing the "Cancel" or red close button in open and save file
 #Implement a warning when closing the window (without saving)
 #The graph widget (figure) should not be opened/shown until a file is chosen in the drop down menu
-
+#Reload the drop down menus, call it each time the menu is closed
+#Put the comments before (not on the sides)
+#Pass function in function = good, then you don't have to rewrite the entire code, onöy the part that changes
 
 #!/usr/in/python3 #Defines where the interpretor is located. Tells the operating system that it is a python script?
-# -*- coding: utf-8 -*- #Necessary?
+# -*- coding: utf-8 -*-
 
-import sys #Necessary?
-import os #Enables the use of the file dialoge
-import math #Enables the use of sinus and cosinus for the creation of data
+#Imports the necessary libraries
+import sys
+import os
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QComboBox, QTextEdit, QFileDialog, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
-import numpy as np #To use floats as x values
+import numpy as np
 from numpy.fft import fft, fftshift
 
 #For the graph
@@ -25,77 +27,91 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
 
-import random #To create data to plot (should be removed later on)
-from datetime import datetime #Datetime is used to seed random (should be removed later on)
+#For the creation of data
+import random
+from datetime import datetime
+import math
 
 
 class Window(QWidget):
+    #Creates an init method. Constructor
+    def __init__(self):
+         #Super returns the parent object of the class. #Calls the constructor of the QWidget
+        super(Window, self).__init__()
 
-    def __init__(self): #Creates an init method. Constructor
-        super(Window, self).__init__() #Super return the parent object of the class. #Calls the constructor of the QWidget
-
-        self.initUI() #Could be called externally in the if__name__ == '__main__': part
+        self.initUI()
 
     def initUI(self):
 
-        self.text = QTextEdit(self) #To enable the text editor
+        #To enable the text editor
+        self.text = QTextEdit(self)
 
         #Save button
-        self.saveButton = QPushButton('Save') #Saves the text file
+        self.saveButton = QPushButton('Save')
         self.saveButton.setToolTip('Press to save the changes')
         self.saveButton.clicked.connect(self.save_text)
 
         #Run button
-        self.runButton = QPushButton('Run') #Runs the hypothetical test
+        self.runButton = QPushButton('Run')
         self.runButton.setToolTip('Press to run the test')
         self.runButton.clicked.connect(self.run_test)
 
         #Dropdown test
-        self.dropDownTest = QComboBox() #Creates a dropdown menu
+        self.dropDownTest = QComboBox()
 
         #FFT button
         self.fftButton = QCheckBox('FFT')
-        #self.fftButton.stateChanged.connect(self.fft_function)
-        #self.fftButton.toggled.connect(self.fft_function)
         self.fftButton.setToolTip('Fast Fourier Transform')
 
         #Dropdown analyse
         directoryFiles = []
-        self.dropDownAnalyse = QComboBox() #Creates a dropdown menu
-        for index in os.listdir(): #Adds the files in the directory to a list
+        self.dropDownAnalyse = QComboBox()
+
+        #Adds the files in the directory to a list
+        for index in os.listdir():
             directoryFiles.append(index)
-        directoryFiles.sort() #Sorts the list with the files in the directory
-        for index in directoryFiles: #Adds the text files in the directory to the drop down menu in alphabetic order
-            if index.find('.txt') != -1: #Ensures that only text files are displayed as options (change so that it corresponds to the actual file type that we will use later on (if it is not .txt)
+
+        #Adds the text files in the directory to the drop down menu in alphabetical  order
+        directoryFiles.sort()
+        for index in directoryFiles:
+            #Ensures that only text files are displayed as options
+            if index.find('.txt') != -1:
                 self.dropDownAnalyse.addItem(index)
         self.dropDownAnalyse.activated[str].connect(self.plot)
 
         #Titles and subtitles
-        self.titleTest = QLabel('<b>TEST</b>') #Creates a label for the testing part of the interface
-        self.titleTest.setFont(QFont('SansSerif', 14)) #Sets the size of the test label
+        self.titleTest = QLabel('<b>TEST</b>')
+        self.titleTest.setFont(QFont('SansSerif', 14))
         self.subtitleTest = QLabel('Test selection:')
         self.titleAnalyse = QLabel('<b>ANALYSE</b>')
         self.titleAnalyse.setFont(QFont('SansSerif', 14))
         self.subtitleAnalyse = QLabel('Load test data:')
 
-        #Diagram
-        self.figure = plt.figure() #A figure to plot on
-        self.canvas = FigureCanvas(self.figure) #Displays the figure
+        #For the graph. The figure is where the data is plotted and the canvas is where the figure is displayed.
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 
         #Layout
-        v1Layout = QVBoxLayout() #Creates a vertical box layout
-        h1Layout = QHBoxLayout() #Creates a horisontal box layout
+        #Creates a vertical box layout
+        v1Layout = QVBoxLayout()
+        #Creates horisontal box layouts
+        h1Layout = QHBoxLayout()
         h2Layout = QHBoxLayout()
         h3Layout = QHBoxLayout()
 
-        v1Layout.addWidget(self.titleTest) #Adds the widget for the test title to the vertical box layout
-        h1Layout.addWidget(self.subtitleTest) #Adds the widget for the test subtitle to the first horisontal layout
+        #Adds the widget for the test title to the vertical box layout
+        v1Layout.addWidget(self.titleTest)
+
+        #Adds widgets to the first horisontal layout
+        h1Layout.addWidget(self.subtitleTest)
         h1Layout.addWidget(self.dropDownTest)
+        #Pushes the widgets to the left corner
         h1Layout.addStretch(1)
 
-        v1Layout.addLayout(h1Layout) #Adds the first horisontal layout to the vertical layout
-        v1Layout.addWidget(self.text) #Places the text editor
+        #Adds the first horisontal layout to the vertical layout
+        v1Layout.addLayout(h1Layout)
+        v1Layout.addWidget(self.text)
 
         h2Layout.addWidget(self.saveButton)
         h2Layout.addWidget(self.runButton)
@@ -106,7 +122,7 @@ class Window(QWidget):
         h3Layout.addWidget(self.subtitleAnalyse)
         h3Layout.addWidget(self.dropDownAnalyse)
         h3Layout.addWidget(self.fftButton)
-        h3Layout.addStretch(1) #Pushes the widgets to the left corner
+        h3Layout.addStretch(1)
 
         v1Layout.addLayout(h3Layout)
 
@@ -114,31 +130,38 @@ class Window(QWidget):
         v1Layout.addWidget(self.toolbar)
         v1Layout.addWidget(self.canvas)
 
-        QToolTip.setFont(QFont('SansSerif', 10)) #Sets the font for the Tooltip elements (the text explaining the function of a widget by popping up when hovered over)
+        #Sets the font for the Tooltip elements
+        QToolTip.setFont(QFont('SansSerif', 10))
 
         self.setLayout(v1Layout)
-        self.setWindowTitle('MIDAS') #Sets the window title
-        self.show() #Shows the window
+        self.setWindowTitle('MIDAS')
+        #Shows the window
+        self.show()
 
-    def save_text(self): #Lets the user save a document in a chosen folder
-        filename = QFileDialog.getSaveFileName(self, 'Save file', os.getenv('HOME')) #The os.getenv accesses the file dialog (finder)
-        with open(filename[0], 'w') as f: #What does this part mean?
+    #Lets the user save a document in a chosen folder
+    def save_text(self):
+        #Accesses the file dialog
+        filename = QFileDialog.getSaveFileName(self, 'Save file', os.getenv('HOME'))
+        with open(filename[0], 'w') as f:
             my_text = self.text.toPlainText()
             f.write(my_text)
 
     def run_test(self):
         pass
 
-    def plot(self, fileName): #Plots the data as a graph
+    #Plots the data (of the file passed as an argument) as a graph
+    def plot(self, fileName):
+        self.figure.clear()
 
-        self.figure.clear() #Clears the figure. May be good to use if we decide to keep the plot button
-
-        xList = [] #Creates lists for the x and y coordinates
+        #Creates lists for the x and y coordinates
+        xList = []
         yList = []
 
-        text_file = open(fileName, "r") #Opens and reads the file with the name passed as an argument to the function (the file chosen in the dropdown menu)
+        #Opens and reads the file with the name passed as an argument to the function
+        text_file = open(fileName, "r")
         lines = text_file.readlines()
-        for line in lines: #Adds the x and y coordinates to the corresponding lists
+        #Adds the data for the x and y coordinates to the corresponding lists
+        for line in lines:
             x,y = line.split(',')
             x = float(x)
             y = float(y)
@@ -146,17 +169,13 @@ class Window(QWidget):
             yList.append(y)
         text_file.close()
 
-        #plt.xlabel('Time (s)')
+        #Sets the label of the y axis
         plt.ylabel('Voltage(V)')
-        #plt.plot(xList, yList)
 
-        plt.axhline(0, color ='black', linewidth = 0.5) #Plots line at y = 0
+        #Plots line at y = 0
+        plt.axhline(0, color ='black', linewidth = 0.5)
 
-        #print(self.fftButton.isChecked()) #To check the program for errors
-
-        #Checks if the FFT checkbox is checked and adjusts the x axis and plot of the data
-        #self.fftButton.toggled.connect(self.fft_function)
-
+        #Sets the label of the x axis and plots either the "regular" graph or the graph after FFT
         if self.fftButton.isChecked():
             plt.xlabel('Frequency (Hz)')
             plt.plot(xList, fft(yList))
@@ -166,55 +185,32 @@ class Window(QWidget):
 
         self.canvas.draw()
 
-    """
-    def plot_fft(self, fileName): #Plots the data as a graph
-
-        self.figure.clear() #Clears the figure. May be good to use if we decide to keep the plot button
-
-        xList = [] #Creates lists for the x and y coordinates
-        yList = []
-
-        text_file = open(fileName, "r") #Opens and reads the file with the name passed as an argument to the function (the file chosen in the dropdown menu)
-        lines = text_file.readlines()
-        for line in lines: #Adds the x and y coordinates to the corresponding lists
-            x,y = line.split(',')
-            x = float(x)
-            y = float(y)
-            xList.append(x)
-            yList.append(y)
-        text_file.close()
-
-        plt.xlabel('Frequenzy (Hz)')
-        plt.ylabel('Voltage(V)')
-        plt.plot(xList, fft(yList))
-
-        plt.axhline(0, color ='black', linewidth = 0.5) #Plots line at y = 0
-
-        self.canvas.draw() #Draws the graph
-        
-    """
-
     def fft_function(self):
         pass
 
-def main(): #The main function
-
-    random.seed(datetime.now()) #Seeds random from the current time
+#The main function
+def main():
+    #Seeds random from the current time
+    random.seed(datetime.now())
 
     """
-    text_file = open("sine2.txt", "w")  # Creates/overwrites a text file with randomized data for the graph
-    for index in np.arange(0.0, math.pi, 0.1): #(start, stop, step)
+    # Creates/overwrites a text file with randomized data for the graph
+    text_file = open("sine2.txt", "w") 
+    #Creates data points accordingly: (start, stop, step)
+    for index in np.arange(0.0, math.pi, 0.1):
         x = str(index)
         y = str(math.sin(2*float(x)))
-        #y = str(round(random.uniform(0,9), 3)) #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
+        #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
+        #y = str(round(random.uniform(0,9), 3))
         text_file.write(x + ',' + y)
         text_file.write('\n')
     text_file.close()
     """
-
-    app = QApplication(sys.argv) #Creates an application object. sys.argv is a list of command line arguments.
+    #Constructs an application object. sys.argv is a list of command line arguments.
+    app = QApplication(sys.argv)
     ex = Window()
-    sys.exit(app.exec_()) #Enters the main loop (?) Ensures that the program ends correctly (?)
+    #Makes the program wait for user input/action
+    sys.exit(app.exec_())
 
 if __name__ == '__main__' :
     main()
