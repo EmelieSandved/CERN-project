@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip, QCombo
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 import numpy as np
-from numpy.fft import fft, fftshift
+from numpy.fft import fft, fftshift, fftfreq
 
 #For the graph
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -71,6 +71,13 @@ class Window(QWidget):
         for index in os.listdir():
             directoryFiles.append(index)
 
+        #For the graph. The figure is where the data is plotted and the canvas is where the figure is displayed.
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        self.toolbar.hide()
+
         #Adds the text files in the directory to the drop down menu in alphabetical  order
         directoryFiles.sort()
         for index in directoryFiles:
@@ -86,11 +93,6 @@ class Window(QWidget):
         self.titleAnalyse = QLabel('<b>ANALYSE</b>')
         self.titleAnalyse.setFont(QFont('SansSerif', 14))
         self.subtitleAnalyse = QLabel('Load test data:')
-
-        #For the graph. The figure is where the data is plotted and the canvas is where the figure is displayed.
-        self.figure = plt.figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
 
         #Layout
         #Creates a vertical box layout
@@ -179,10 +181,12 @@ class Window(QWidget):
         if self.fftButton.isChecked():
             plt.xlabel('Frequency (Hz)')
             plt.plot(xList, fft(yList))
+
         else:
             plt.xlabel('Time (s)')
             plt.plot(xList, yList)
 
+        plt.tight_layout()
         self.canvas.draw()
 
     def fft_function(self):
@@ -195,9 +199,9 @@ def main():
 
     """
     # Creates/overwrites a text file with randomized data for the graph
-    text_file = open("sine2.txt", "w") 
+    text_file = open("sine2integer.txt", "w")
     #Creates data points accordingly: (start, stop, step)
-    for index in np.arange(0.0, math.pi, 0.1):
+    for index in np.arange(0, math.pi, 0.1):
         x = str(index)
         y = str(math.sin(2*float(x)))
         #Uniform is used to randomize floats. The floats are rounded to 3 decimals.
