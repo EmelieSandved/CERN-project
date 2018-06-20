@@ -31,7 +31,6 @@ import random
 from datetime import datetime
 import math
 
-
 class Window(QWidget):
     #Creates an init method. Constructor
     def __init__(self):
@@ -41,6 +40,11 @@ class Window(QWidget):
         self.initUI()
 
     def initUI(self):
+
+        #Titles and subtitles test
+        self.titleTest = QLabel('<b>TEST</b>')
+        self.titleTest.setFont(QFont('SansSerif', 14))
+        self.subtitleTest = QLabel('Test selection:')
 
         #Dropdown test
         directorytestFiles = []
@@ -66,6 +70,12 @@ class Window(QWidget):
         self.runButton = QPushButton('Run')
         self.runButton.setToolTip('Press to run the testfile')
         self.runButton.clicked.connect(self.run_test)
+
+        #Titles and subtitles analyse
+        self.titleAnalyse = QLabel('<b>ANALYSE</b>')
+        self.titleAnalyse.setFont(QFont('SansSerif', 14))
+        self.subtitleAnalyse = QLabel('Load test data:')
+
         #FFT button
         self.fftButton = QCheckBox('FFT')
         self.fftButton.setToolTip('Fast Fourier Transform')
@@ -87,14 +97,6 @@ class Window(QWidget):
         self.toolbar = NavigationToolbar(self.canvas, self)
 
         self.toolbar.hide()
-
-        #Titles and subtitles
-        self.titleTest = QLabel('<b>TEST</b>')
-        self.titleTest.setFont(QFont('SansSerif', 14))
-        self.subtitleTest = QLabel('Test selection:')
-        self.titleAnalyse = QLabel('<b>ANALYSE</b>')
-        self.titleAnalyse.setFont(QFont('SansSerif', 14))
-        self.subtitleAnalyse = QLabel('Load test data:')
 
         #Layout
         #Creates a vertical box layout
