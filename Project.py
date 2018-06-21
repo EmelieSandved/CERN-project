@@ -66,6 +66,7 @@ class Window(QWidget):
         self.runButton = QPushButton('Run')
         self.runButton.setToolTip('Press to run the testfile')
         self.runButton.clicked.connect(self.run_test)
+
         #FFT button
         self.fftButton = QCheckBox('FFT')
         self.fftButton.setToolTip('Fast Fourier Transform')
@@ -134,7 +135,6 @@ class Window(QWidget):
         #Layout for the graph
         v1Layout.addWidget(self.toolbar)
         v1Layout.addWidget(self.canvas)
-
         #Sets the font for the Tooltip elements
         QToolTip.setFont(QFont('SansSerif', 10))
 
@@ -162,9 +162,7 @@ class Window(QWidget):
 
     #Plots the data (of the file passed as an argument) as a graph
     def plot(self, fileName):
-
         self.figure.clear()
-        #self.canvas.show()
 
         #Creates lists for the x and y coordinates
         xList = []
@@ -188,6 +186,8 @@ class Window(QWidget):
         #Plots line at y = 0
         plt.axhline(0, color ='black', linewidth = 0.5)
 
+        self.fftButton.stateChanged.connect(self.fft_function)
+
         #Sets the label of the x axis and plots either the "regular" graph or the graph after FFT
         if self.fftButton.isChecked():
             plt.xlabel('Frequency (Hz)')
@@ -200,8 +200,23 @@ class Window(QWidget):
         plt.tight_layout()
         self.canvas.draw()
 
-    def fft_function(self):
+    def fft_function(self, state):
         pass
+        """
+        self.figure.clear()
+
+        if state:
+            print('The fft is checked')
+            plt.xlabel('Frequency (Hz)')
+            plt.plot(xList, fft(yList))
+
+        else:
+            print('The fft is NOT checked')
+            plt.xlabel('Time (s)')
+            plt.plot(xList, yList)
+
+        self.canvas.draw()
+        """
 
 #The main function
 def main():
