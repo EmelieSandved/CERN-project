@@ -3,7 +3,6 @@
 
 
 #Things to be done:
-#Fix so that the program ends correctly when pressing the "Cancel" or red close button in open and save file
 #Implement a warning when closing the window (without saving)
 #The graph widget (figure) should not be opened/shown until a file is chosen in the drop down menu
 #Reload the drop down menus, call it each time the menu is closed
@@ -47,10 +46,8 @@ class Window(QWidget):
         self.subtitleTest = QLabel('Test selection:')
 
         #Dropdown test
-        directorytestFiles = []
+        directorytestFiles = sorted(os.listdir())
         self.dropDownTest = QComboBox()
-        for index in os.listdir(): #Adds the files in the directory to a list
-            directorytestFiles.append(index)
         for index in directorytestFiles:
             if index.find('.py') == -1:
                 self.dropDownTest.addItem(index)
@@ -150,6 +147,7 @@ class Window(QWidget):
         textFile = open(fileName).read()
         self.text.setText(textFile)
         self.text.show()
+
 
     #Lets the user save a document in a chosen folder
     def save_text(self):
