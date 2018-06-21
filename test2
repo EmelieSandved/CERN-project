@@ -1,1 +1,14 @@
-hej! 2
+import sys
+from PyQt5.QtWidgets import QApplication,QWidget
+
+if __name__ == '__main__':
+
+    app = QApplication(sys.argv)
+
+    w = QWidget()
+    w.setGeometry(400,150,550,350)
+    w.setWindowTitle('Window')
+    w.show()
+
+    sys.exit(app.exec_())
+

@@ -119,6 +119,7 @@ class Window(QWidget):
 
         h2Layout.addWidget(self.saveButton)
         h2Layout.addWidget(self.runButton)
+        h2Layout.addStretch(1)
 
         v1Layout.addLayout(h2Layout)
         v1Layout.addWidget(self.titleAnalyse)

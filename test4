@@ -1,1 +1,33 @@
-hej! X4
+import sys
+from PyQt5.QtWidgets import QWidget, QPushButton, QApplication
+
+class Example(QWidget):
+
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
+
+
+    def initUI(self):
+        qbtn = QPushButton('Quit',self)
+        qbtn.setToolTip('This Button Will Quit the Program')
+        qbtn.clicked.connect(QApplication.instance().quit)
+        qbtn.resize(qbtn.sizeHint())
+        qbtn.move(450,250)
+
+        btn = QPushButton('Surprise!',self)
+        btn.setToolTip('This is a ToolTip')
+        btn.clicked.connect(QApplication.instance().quit)
+        btn.resize(btn.sizeHint())
+        btn.move(50,50)
+
+        self.setGeometry(400, 150, 550, 300)
+        self.setWindowTitle('Window With Buttons')
+        self.show()
+
+if __name__ == '__main__':
+
+    app = QApplication(sys.argv)
+    ex = Example()
+    sys.exit(app.exec_())
