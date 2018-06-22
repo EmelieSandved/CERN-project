@@ -69,7 +69,7 @@ class Window(QWidget):
         self.runButton.clicked.connect(self.run_test)
 
         #Titles and subtitles analyse
-        self.titleAnalyse = QLabel('<b>ANALYSE</b>')
+        self.titleAnalyse = QLabel('<b>ANALYSIS</b>')
         self.titleAnalyse.setFont(QFont('SansSerif', 14))
         self.subtitleAnalyse = QLabel('Load test data:')
 
